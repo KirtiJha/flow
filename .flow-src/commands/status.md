@@ -25,3 +25,8 @@ Current budgets and recorded spend:
 Be truthful: report what STATE actually says. If STATE is stale or inconsistent
 (e.g. phase marked done but no artifact), say so rather than papering over it. This
 command never mutates state.
+
+> If the inlined budget/metrics output above looks empty or disagrees with
+> `.flow/metrics/` (it can be captured in a different working directory), don't trust
+> it — re-run the check from the project root or read `.flow/metrics/<month>.jsonl`
+> directly, and report the real spend.
