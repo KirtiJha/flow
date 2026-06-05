@@ -18,6 +18,30 @@ npm run gen      # generate Claude Code (Skills) + Copilot layouts from .flow-sr
 Then in Claude Code: `/flow "add rate limiting to the public API"` — FLOW triages
 the request, announces the path and a token estimate, and runs it pausing at gates.
 
+## First run
+
+The runtime layouts and hook wiring are **not** committed (they are generated and
+machine-local), so a fresh clone needs two setup steps before the slash commands and
+governance gates work:
+
+```bash
+npm install                                   # tsx + typescript
+npm run gen                                   # REQUIRED: generate .claude/ + .github/ layouts
+cp hooks/settings.example.json .claude/settings.json   # wire the budget / commit / metrics hooks
+```
+
+- **`npm run gen` is mandatory.** Without it there is no `.claude/skills/` directory,
+  so `/flow` and the phase commands do not exist. Re-run it after any edit to
+  `.flow-src/`.
+- **Copy the hooks** to activate the deterministic gates (budget block, atomic-commit
+  enforcement, metrics). Restart Claude Code afterward so it loads `.claude/settings.json`.
+- **Sanity check:** `npm run typecheck && npm test` should both pass, and
+  `npm run gen -- --check` should report no drift.
+
+> On Windows, model tiers in `flow.config.json` resolve to native Claude Code aliases
+> (`haiku`/`sonnet`/`opus`); switch them to your LiteLLM `model_list` names when
+> routing through the gateway.
+
 ## Why FLOW
 
 - **Ceremony earns its keep.** Triage routes one-line changes to a `quick` path and
