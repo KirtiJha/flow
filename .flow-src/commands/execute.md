@@ -33,5 +33,7 @@ You are the orchestrator. Walk the plan **wave by wave**:
 - Compress noisy build/test output before it enters context.
 
 ## After
-Update `.flow/STATE.md` (phase status, commits, next action). Execution does **not**
-ship; the next phase is **verify**.
+**Update `.flow/STATE.md` in place** (never append a duplicate row): set **Active
+phase** = `execute`; update the `execute` row (Status `done`, Artifact = the atomic
+commits, e.g. `bin/cli.js +N (M commits)`); append one dated decisions-log line;
+replace **Next action**. Execution does **not** ship; the next phase is **verify**.

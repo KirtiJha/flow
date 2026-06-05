@@ -27,5 +27,9 @@ The planner reads everything but **writes only the PLAN** — no source, no comm
 ## After
 - Summarize the plan: task count, waves, top risks, estimated tokens vs. the `plan`
   cap (`npm run budget -- check plan`).
-- Update `.flow/STATE.md` (phase status, next action).
+- **Update `.flow/STATE.md` in place** (never append a duplicate row): if this starts
+  a new milestone, set **Current milestone** and reset the six phase rows to
+  `not-started` first; set **Active phase** = `plan` and **Path**; update the `plan`
+  row (Status `done`, Artifact = real `plans/<phase>/PLAN.md`); append one dated
+  decisions-log line; replace **Next action**.
 - On `full`, the next phase is **review**; on `standard`, proceed toward execute.

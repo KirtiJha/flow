@@ -27,4 +27,7 @@ Spawn the **verifier** subagent in a fresh context. It must:
 ## After
 - Surface the verdict prominently and the spend vs. the `verify` cap.
 - **If FAIL:** route the fix plan back to `/flow-execute`; do not proceed to ship.
-- **If PASS:** ship is now unblocked. Update `.flow/STATE.md`.
+- **If PASS:** ship is now unblocked. **Update `.flow/STATE.md` in place** (no
+  duplicate rows): set **Active phase** = `verify`; update the `verify` row (Status
+  `done`, Artifact = real `plans/<phase>/VERIFY.md`, Last gate = `PASS`/`FAIL`); append
+  one dated decisions-log line; replace **Next action**.

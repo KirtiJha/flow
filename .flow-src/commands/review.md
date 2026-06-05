@@ -26,4 +26,7 @@ another's findings; only surviving points are kept. It writes
 - Summarize blockers/majors/minors and the overall verdict
   (proceed / revise-then-proceed / replan).
 - If blockers exist, loop back to `/flow-plan` to revise before executing.
-- Show spend vs. the `review` cap; update `.flow/STATE.md`.
+- Show spend vs. the `review` cap. **Update `.flow/STATE.md` in place** (no duplicate
+  rows): set **Active phase** = `review`; update the `review` row (Status `done`,
+  Artifact = real `reviews/<phase>/REVIEWS.md`, Last gate = the verdict); append one
+  dated decisions-log line; replace **Next action**.

@@ -41,10 +41,17 @@ and your token estimate:
 If it blocks (hard cap), stop and report; do not silently proceed.
 
 ## 5. Run the path
+If this request starts a **new milestone**, first set **Current milestone** in
+`.flow/STATE.md` and reset the six phase-status rows to `not-started`.
+
 Execute the phases for the chosen path **by delegating heavy work to fresh-context
 subagents** (planner, reviewer, executor waves, verifier). After each phase:
 - show spend vs. cap,
-- update `.flow/STATE.md` (phase status table + decisions log + next action),
+- **update `.flow/STATE.md` in place** — set **Active phase** + **Path**, update
+  *that phase's* row in the six-row table (Status / Artifact / Last gate) **without
+  adding a duplicate row**, append one dated decisions-log line, and replace the
+  single **Next action**. (Applies on every path, including `quick` — keep STATE
+  truthful even when there's no plan artifact.)
 - pause at gates so the user can steer.
 
 ## 6. Hard constraint

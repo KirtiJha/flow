@@ -35,5 +35,12 @@ investigation to the **researcher** subagent and consume only its summary.
 - Constraints and assumptions
 - Inputs the planner will need
 
-Then append a one-line entry to the **decisions log** in `.flow/STATE.md` and set
-the next action. Show spend vs. the `discuss` cap.
+## Update STATE (in place — keep it truthful)
+Edit `.flow/STATE.md` directly; never append a duplicate phase row:
+- If this starts a **new milestone**, set **Current milestone** and reset all six
+  phase-status rows to `not-started` first.
+- Set **Active phase** = `discuss` and **Path**.
+- Update the `discuss` row in the phase-status table in place (Status `done`,
+  Artifact = the real `plans/<phase>/DECISIONS.md`, Last gate).
+- Append one dated line to the **decisions log** (replace the `<YYYY-MM-DD>` example
+  on first use); replace **Next action**. Show spend vs. the `discuss` cap.

@@ -20,6 +20,12 @@
 
 ## Phase status
 
+> Exactly these six rows, one per phase, for the **current milestone**. As a phase
+> runs, update its row **in place** (Status / Artifact / Last gate) — never add a
+> second row for the same phase, and replace `<phase>` in the artifact path with the
+> real phase slug. On a **new milestone**, reset all six rows to `not-started`. Past
+> milestones live in the decisions log and archived artifacts, not in this table.
+
 | Phase   | Status      | Artifact                       | Last gate |
 |---------|-------------|--------------------------------|-----------|
 | discuss | not-started | plans/<phase>/DECISIONS.md      | —         |
@@ -32,6 +38,7 @@
 ## Decisions log (append-only)
 
 > Never edit or delete prior entries. Append new ones at the bottom with a date.
+> Replace the example line below on your first real entry.
 
 - <YYYY-MM-DD> — <decision and one-line rationale>
 
