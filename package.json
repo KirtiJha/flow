@@ -8,13 +8,24 @@
     "node": ">=18"
   },
   "bin": {
+    "flow": "bin/install.js",
     "flow-gen": "dist/scripts/flow-gen.js",
     "flow-budget": "dist/scripts/flow-budget.js",
     "flow-compress": "dist/scripts/flow-compress.js",
     "flow-metrics": "dist/scripts/flow-metrics.js"
   },
+  "files": [
+    "dist/",
+    "bin/",
+    "hooks/",
+    ".flow-src/",
+    "flow.config.json",
+    "docs/flow/",
+    "README.md"
+  ],
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "build": "tsc -p tsconfig.build.json",
+    "prepublishOnly": "npm run build",
     "gen": "node --import tsx scripts/flow-gen.ts",
     "gen:legacy": "node --import tsx scripts/flow-gen.ts --legacy-commands",
     "budget": "node --import tsx scripts/flow-budget.ts",
