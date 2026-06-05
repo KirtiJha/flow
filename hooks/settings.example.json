@@ -1,0 +1,40 @@
+{
+  "$comment": "Copy these hook entries into .claude/settings.json to wire FLOW's deterministic gates. Paths are relative to the project root; adjust if your root differs. These run plain Node ESM scripts (no build step).",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Skill|SlashCommand",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node hooks/pre-phase-budget.mjs",
+            "$comment": "Budget gate: blocks a FLOW phase when its hard cap is exceeded."
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node hooks/atomic-commit.mjs",
+            "$comment": "Enforces Conventional Commits / one atomic commit per task."
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node hooks/post-session-metrics.mjs",
+            "$comment": "Appends one metrics record per session to .flow/metrics/."
+          }
+        ]
+      }
+    ]
+  }
+}

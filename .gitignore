@@ -1,0 +1,14 @@
+node_modules/
+dist/
+*.log
+.DS_Store
+
+# Generated runtime layouts — produced by `flow-gen` from .flow-src/.
+# Kept out of version control so the canonical source in .flow-src/ stays
+# the single source of truth. Run `npm run gen` to (re)create these.
+/.claude/
+/.github/prompts/
+/.github/agents/
+
+# Per-session metrics output (the directory is tracked via .gitkeep).
+/.flow/metrics/*.jsonl

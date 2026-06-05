@@ -1,0 +1,31 @@
+{
+  "name": "flow",
+  "version": "0.1.0",
+  "private": false,
+  "description": "FLOW — Fresh-context Loop for Orchestrated Work. A disciplined five-phase agent loop authored once and generated into Claude Code and GitHub Copilot layouts.",
+  "type": "module",
+  "engines": {
+    "node": ">=18"
+  },
+  "bin": {
+    "flow-gen": "dist/scripts/flow-gen.js",
+    "flow-budget": "dist/scripts/flow-budget.js",
+    "flow-compress": "dist/scripts/flow-compress.js",
+    "flow-metrics": "dist/scripts/flow-metrics.js"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "gen": "node --import tsx scripts/flow-gen.ts",
+    "gen:legacy": "node --import tsx scripts/flow-gen.ts --legacy-commands",
+    "budget": "node --import tsx scripts/flow-budget.ts",
+    "compress": "node --import tsx scripts/flow-compress.ts",
+    "metrics": "node --import tsx scripts/flow-metrics.ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3",
+    "@types/node": "^20.16.0"
+  },
+  "license": "MIT"
+}
