@@ -20,6 +20,7 @@
     "budget": "node --import tsx scripts/flow-budget.ts",
     "compress": "node --import tsx scripts/flow-compress.ts",
     "metrics": "node --import tsx scripts/flow-metrics.ts",
+    "test": "node --import tsx --test scripts/**/*.test.ts",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "devDependencies": {
