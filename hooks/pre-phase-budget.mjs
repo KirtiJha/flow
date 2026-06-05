@@ -12,25 +12,19 @@
  */
 import { spawnSync } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
-import { dirname, join, resolve } from "node:path";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 
 const PHASE_RE = /flow-(discuss|plan|review|execute|verify|ship)/i;
+
+/** FLOW package/repo root = parent of this hook's own `hooks/` dir. */
+const SELF_ROOT = dirname(dirname(fileURLToPath(import.meta.url)));
 
 function readStdin() {
   try {
     return readFileSync(0, "utf8");
   } catch {
     return "";
-  }
-}
-
-function findRoot(start) {
-  let cur = resolve(start);
-  for (;;) {
-    if (existsSync(join(cur, "flow.config.json"))) return cur;
-    const parent = dirname(cur);
-    if (parent === cur) return null;
-    cur = parent;
   }
 }
 
@@ -49,19 +43,25 @@ function resolveFlowScript(root, name) {
   };
 }
 
-const input = JSON.parse(readStdin() || "{}");
+let input = {};
+try {
+  input = JSON.parse(readStdin().trim() || "{}");
+} catch {
+  process.exit(0); // non-JSON stdin: nothing to gate
+}
 const ti = input.tool_input ?? {};
 const name = String(ti.skill ?? ti.command ?? ti.name ?? input.prompt ?? "");
 const m = name.match(PHASE_RE);
 if (!m) process.exit(0); // not a phase boundary — nothing to gate
 
 const phase = m[1].toLowerCase();
-const root = findRoot(input.cwd ?? process.cwd());
-if (!root) process.exit(0);
-
-const { node, args } = resolveFlowScript(root, "flow-budget");
+// Resolve the helper script from the package (this hook's location); run it in the
+// PROJECT (input.cwd) so flow-budget locates that project's .flow/ state. When the
+// installed package and the target project differ, these are two different dirs.
+const projectDir = input.cwd ?? process.cwd();
+const { node, args } = resolveFlowScript(SELF_ROOT, "flow-budget");
 const res = spawnSync(node, [...args, "check", phase], {
-  cwd: root,
+  cwd: projectDir,
   encoding: "utf8",
 });
 

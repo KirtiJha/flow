@@ -12,6 +12,10 @@
 import { spawnSync } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+
+/** FLOW package/repo root = parent of this hook's own `hooks/` dir. */
+const SELF_ROOT = dirname(dirname(fileURLToPath(import.meta.url)));
 
 function readStdin() {
   try {
@@ -21,10 +25,11 @@ function readStdin() {
   }
 }
 
-function findRoot(start) {
+/** Walk up from `start` for a project `.flow/` dir (where metrics are recorded). */
+function findFlowDir(start) {
   let cur = resolve(start);
   for (;;) {
-    if (existsSync(join(cur, "flow.config.json"))) return cur;
+    if (existsSync(join(cur, ".flow"))) return cur;
     const parent = dirname(cur);
     if (parent === cur) return null;
     cur = parent;
@@ -45,9 +50,16 @@ function resolveFlowScript(root, name) {
   };
 }
 
-const input = JSON.parse(readStdin() || "{}");
-const root = findRoot(input.cwd ?? process.cwd());
-if (!root) process.exit(0);
+let input = {};
+try {
+  input = JSON.parse(readStdin().trim() || "{}");
+} catch {
+  process.exit(0); // non-JSON stdin: nothing to record
+}
+// Record only in projects that actually have FLOW state — stay quiet elsewhere
+// (e.g. a globally-wired hook firing in an unrelated repo).
+const projectDir = findFlowDir(input.cwd ?? process.cwd());
+if (!projectDir) process.exit(0);
 
 const tokens = process.env.FLOW_SESSION_TOKENS ?? "0";
 const phase = process.env.FLOW_SESSION_PHASE ?? "session";
@@ -56,11 +68,13 @@ const note =
     ? "no token count surfaced (reconcile from LiteLLM/Bedrock accounting)"
     : "from session usage";
 
-const { node, args } = resolveFlowScript(root, "flow-metrics");
+// Script comes from the package (this hook's location); run in the project so the
+// record lands under <project>/.flow/metrics/.
+const { node, args } = resolveFlowScript(SELF_ROOT, "flow-metrics");
 const res = spawnSync(
   node,
   [...args, "append", "--phase", phase, "--tokens", tokens, "--note", note],
-  { cwd: root, encoding: "utf8" },
+  { cwd: projectDir, encoding: "utf8" },
 );
 if ((res.stdout ?? "").trim()) process.stdout.write(res.stdout.trim() + "\n");
 process.exit(0);

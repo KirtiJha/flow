@@ -23,7 +23,12 @@ function readStdin() {
   }
 }
 
-const input = JSON.parse(readStdin() || "{}");
+let input = {};
+try {
+  input = JSON.parse(readStdin().trim() || "{}");
+} catch {
+  process.exit(0); // non-JSON stdin: nothing to check
+}
 const cmd = String(input.tool_input?.command ?? "");
 // Only react to commands that actually create a commit.
 if (!/\bgit\s+commit\b/.test(cmd)) process.exit(0);
