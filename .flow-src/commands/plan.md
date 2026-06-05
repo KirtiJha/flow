@@ -26,6 +26,6 @@ The planner reads everything but **writes only the PLAN** — no source, no comm
 
 ## After
 - Summarize the plan: task count, waves, top risks, estimated tokens vs. the `plan`
-  cap (`!`flow-budget check plan``).
+  cap (`npm run budget -- check plan`).
 - Update `.flow/STATE.md` (phase status, next action).
 - On `full`, the next phase is **review**; on `standard`, proceed toward execute.

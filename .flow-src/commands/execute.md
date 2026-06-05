@@ -21,8 +21,8 @@ You are the orchestrator. Walk the plan **wave by wave**:
    hundreds of agents). Each executor writes code + tests and makes **one atomic
    commit** for its task.
 3. When the wave completes, collect each executor's summary (compressed), update the
-   todo/wave status, and check the budget before the next wave:
-   !`flow-budget check execute --estimate <wave_est>`
+   todo/wave status, and check the budget before the next wave (substitute your
+   estimate): `npm run budget -- check execute --estimate <wave_est>`
    The `execute` cap is **per wave** — stop at the hard cap and report.
 4. Repeat until all waves are done or a gate halts you.
 

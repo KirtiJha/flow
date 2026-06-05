@@ -11,8 +11,8 @@ Read state:
 @.flow/STATE.md
 
 Current budgets and recorded spend:
-!`flow-budget show`
-!`flow-metrics summary`
+!`node --import tsx scripts/flow-budget.ts show`
+!`node --import tsx scripts/flow-metrics.ts summary`
 
 ## Print a tight snapshot
 - **Project / milestone** — name, mode, milestone in flight.

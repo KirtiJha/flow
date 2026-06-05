@@ -35,8 +35,9 @@ phases, and a **token estimate** vs. the relevant caps from BUDGET.md. This is t
 proportionality gate — the main defense against runaway cost.
 
 ## 4. Budget gate
-At each phase boundary run the budget check and respect it:
-!`flow-budget check <phase> --estimate <est>`
+At each phase boundary, run the budget check and respect it — substitute the phase
+and your token estimate:
+`npm run budget -- check <phase> --estimate <est>`
 If it blocks (hard cap), stop and report; do not silently proceed.
 
 ## 5. Run the path
