@@ -27,5 +27,9 @@ jobs:
       - run: npm run build
       - run: npm run typecheck
       - run: npm test
-      - name: Generator round-trip is clean
+      # Generated files are git-ignored, so a fresh checkout has none. Generate first,
+      # then --check must report zero drift (proves the round-trip is idempotent here).
+      - name: Generate runtime layouts
+        run: npm run gen
+      - name: Generator round-trip is idempotent
         run: npm run gen -- --check
