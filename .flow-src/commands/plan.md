@@ -2,7 +2,7 @@
 description: Phase 2. Decompose into atomic, verifiable tasks grouped into waves. Delegates to the planner subagent. Writes PLAN.md. Runnable standalone.
 allowed-tools: read, grep, glob, task, write
 model: high
-argument-hint: "[<phase/milestone>]"
+argument-hint: "[<phase/milestone>] [--verbose]"
 ---
 
 # /flow-plan — atomic, verifiable plan

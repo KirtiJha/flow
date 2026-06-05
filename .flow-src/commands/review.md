@@ -2,7 +2,7 @@
 description: Phase 2.5. Adversarial, proportional critique of the PLAN before execution. Delegates to the reviewer subagent. Writes REVIEWS.md. Runnable standalone.
 allowed-tools: read, grep, glob, bash, task, write
 model: high
-argument-hint: "[<phase>]"
+argument-hint: "[<phase>] [--verbose]"
 ---
 
 # /flow-review — refute the plan before building
@@ -26,7 +26,7 @@ another's findings; only surviving points are kept. It writes
 - Summarize blockers/majors/minors and the overall verdict
   (proceed / revise-then-proceed / replan).
 - If blockers exist, loop back to `/flow-plan` to revise before executing.
-- Show spend vs. the `review` cap. **Update `.flow/STATE.md` in place** (no duplicate
+- Note spend in one line (`--verbose`/`/flow-status` for detail). **Update `.flow/STATE.md` in place** (no duplicate
   rows): set **Active phase** = `review`; update the `review` row (Status `done`,
   Artifact = real `reviews/<phase>/REVIEWS.md`, Last gate = the verdict); append one
   dated decisions-log line; replace **Next action**.

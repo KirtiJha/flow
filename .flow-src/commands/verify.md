@@ -2,7 +2,7 @@
 description: Phase 4. Adversarially verify built work against the plan's success criteria. Delegates to the verifier subagent. Writes VERIFY.md. Gates Ship. Runnable standalone.
 allowed-tools: read, grep, glob, bash, task, write
 model: high
-argument-hint: "[<phase>] [--no-repair]"
+argument-hint: "[<phase>] [--no-repair] [--verbose]"
 ---
 
 # /flow-verify — Verify has teeth
@@ -40,7 +40,9 @@ Stop when verify PASSES, after 2 rounds, or when a budget cap would be hit. This
 backstop. Surface each round's verdict and spend.
 
 ## After
-- Surface the final verdict prominently and the spend vs. the `verify` cap.
+- Surface the final **verdict** prominently (PASS/FAIL is signal — always show it);
+  note spend in one line (`--verbose`/`/flow-status` for the breakdown). The full
+  per-criterion table lives in `VERIFY.md`, not the chat.
 - **If still FAIL** (repair exhausted/off): leave `VERIFY.md` = FAIL, route the fix
   plan to `/flow-execute`, and **do not** proceed to ship.
 - **If PASS:** ship is now unblocked. **Update `.flow/STATE.md` in place** (no

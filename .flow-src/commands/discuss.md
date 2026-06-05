@@ -2,7 +2,7 @@
 description: Phase 1. Surface and record implementation decisions before any planning. Writes DECISIONS.md. Runnable standalone.
 allowed-tools: read, grep, glob, task, write
 model: mid
-argument-hint: <request or topic>
+argument-hint: "<request or topic> [--verbose]"
 ---
 
 # /flow-discuss — decide before you plan
@@ -43,4 +43,5 @@ Edit `.flow/STATE.md` directly; never append a duplicate phase row:
 - Update the `discuss` row in the phase-status table in place (Status `done`,
   Artifact = the real `plans/<phase>/DECISIONS.md`, Last gate).
 - Append one dated line to the **decisions log** (replace the `<YYYY-MM-DD>` example
-  on first use); replace **Next action**. Show spend vs. the `discuss` cap.
+  on first use); replace **Next action**. Note spend in one line (`--verbose` or
+  `/flow-status` for the breakdown).

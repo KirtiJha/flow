@@ -2,7 +2,7 @@
 description: Phase 3. Run plan tasks in parallel waves via fresh-context executor subagents — one atomic commit per task. FLOW's own orchestration. Runnable standalone.
 allowed-tools: read, grep, glob, bash, task, todo, write
 model: mid
-argument-hint: "[<phase>] [--wave N]"
+argument-hint: "[<phase>] [--wave N] [--verbose]"
 ---
 
 # /flow-execute — build it, one atomic commit per task

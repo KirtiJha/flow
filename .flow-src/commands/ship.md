@@ -2,7 +2,7 @@
 description: Phase 5. Open the PR, archive phase artifacts, update STATE, trigger metrics append. BLOCKED unless VERIFY.md shows PASS. Runnable standalone.
 allowed-tools: read, grep, glob, bash, write
 model: low
-argument-hint: "[<phase>]"
+argument-hint: "[<phase>] [--verbose]"
 ---
 
 # /flow-ship — only when verify passed

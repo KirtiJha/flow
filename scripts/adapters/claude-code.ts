@@ -110,6 +110,13 @@ function claudeMd(commands: CanonicalDoc[], ctx: GenContext): GeneratedFile {
     "### Commands",
     list,
     "",
+    "### Response style",
+    "Concise by default — announce the path briefly, pause at gates, and end with a",
+    "compact summary (changed files · verify verdict · next action · one-line spend).",
+    "Keep detail in artifacts (PLAN / REVIEWS / VERIFY) and `/flow-status`; don't reprint",
+    "per-phase spend tables or STATE diffs. Every command honors `--verbose` for the full",
+    "phase-by-phase narration.",
+    "",
     "> Heavy work runs in fresh-context subagents. Ship is blocked until VERIFY passes.",
     "> Runtime files under `.claude/` are GENERATED — edit `.flow-src/` and re-run `flow-gen`.",
   ].join("\n");

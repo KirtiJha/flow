@@ -2,7 +2,7 @@
 description: Smart entry. Triage a request, announce the chosen path + token estimate, then run it pausing at gates. Always overridable.
 allowed-tools: read, grep, glob, bash, task, todo, write
 model: mid
-argument-hint: "<request> [--quick|--standard|--full]"
+argument-hint: "<request> [--quick|--standard|--full] [--verbose]"
 ---
 
 # /flow — adaptive entry
@@ -53,13 +53,17 @@ If this request starts a **new milestone**, first set **Current milestone** in
 
 Execute the phases for the chosen path **by delegating heavy work to fresh-context
 subagents** (planner, reviewer, executor waves, verifier). After each phase:
-- show spend vs. cap,
 - **update `.flow/STATE.md` in place** — set **Active phase** + **Path**, update
   *that phase's* row in the six-row table (Status / Artifact / Last gate) **without
   adding a duplicate row**, append one dated decisions-log line, and replace the
   single **Next action**. (Applies on every path, including `quick` — keep STATE
   truthful even when there's no plan artifact.)
 - pause at gates so the user can steer.
+
+**Response style (default concise):** don't narrate each phase or reprint spend
+tables/STATE diffs. End with one compact summary — changed files · verify verdict ·
+next action · one-line spend (`spent X / cap` — point to `/flow-status` for the
+breakdown). Use the full phase-by-phase narration only when `--verbose` is passed.
 
 ## 6. Hard constraint
 **Ship is blocked unless the current phase `VERIFY.md` shows PASS.** This is the
