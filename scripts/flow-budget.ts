@@ -14,6 +14,7 @@
  * Exit codes: 0 ok (incl. soft-cap warning), 2 hard-cap block, 1 usage error.
  */
 
+import { pathToFileURL } from "node:url";
 import { flowPaths, readState, parseCaps, capFor, type PhaseCap } from "./flow-core.js";
 
 interface CheckResult {
@@ -137,6 +138,9 @@ function main(argv: string[]): number {
 }
 
 // Run only when invoked directly (not when imported for tests).
-if (import.meta.url === `file://${process.argv[1]}`) {
+// Run only when invoked directly. Compare via pathToFileURL so the check holds on
+// Windows too, where process.argv[1] is a backslash path and import.meta.url is a
+// triple-slash file URL — a raw `file://${argv[1]}` compare never matches there.
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   process.exit(main(process.argv.slice(2)));
 }

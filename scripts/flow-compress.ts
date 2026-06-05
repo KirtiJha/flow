@@ -15,6 +15,8 @@
  *   echo "<output>" | flow-compress
  */
 
+import { pathToFileURL } from "node:url";
+
 export interface CompressOptions {
   /** If total lines <= this, pass through untouched. */
   maxLines: number;
@@ -173,6 +175,7 @@ function numFlag(args: string[], name: string): number | null {
   return Number.isFinite(n) ? n : null;
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+// Cross-platform direct-invocation guard (see flow-budget.ts for the Windows note).
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   main(process.argv.slice(2)).then((code) => process.exit(code));
 }

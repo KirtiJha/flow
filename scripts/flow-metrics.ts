@@ -15,6 +15,7 @@
 
 import { appendFileSync, existsSync, readFileSync, mkdirSync } from "node:fs";
 import { join } from "node:path";
+import { pathToFileURL } from "node:url";
 import { flowPaths } from "./flow-core.js";
 
 export interface MetricRecord {
@@ -134,6 +135,7 @@ function main(argv: string[]): number {
   }
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+// Cross-platform direct-invocation guard (see flow-budget.ts for the Windows note).
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   process.exit(main(process.argv.slice(2)));
 }
