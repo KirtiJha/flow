@@ -23,6 +23,7 @@ import {
   resolveModel,
   buildFrontmatter,
   withBanner,
+  rewriteInvocations,
 } from "./shared.js";
 import { replaceMarkerRegion } from "../flow-core.js";
 
@@ -36,6 +37,13 @@ function commandFile(doc: CanonicalDoc, ctx: GenContext): GeneratedFile {
   const inv = invocation(doc.name);
   const tools = translateTools(doc.tools, CANONICAL_TO_CLAUDE).join(", ");
   const model = resolveModel(doc.frontmatter["model"], ctx.config);
+  // In install mode, command bodies must call the installed package's compiled
+  // scripts by absolute path (the dev repo's `npm run`/`tsx` invocations don't
+  // resolve in a user's project).
+  const body =
+    ctx.invocationMode === "install" && ctx.installDir
+      ? rewriteInvocations(doc.body, ctx.installDir)
+      : doc.body;
 
   if (ctx.legacyCommands) {
     // .claude/commands/<name>.md — filename is the command name.
@@ -47,7 +55,7 @@ function commandFile(doc: CanonicalDoc, ctx: GenContext): GeneratedFile {
     ]);
     return {
       path: join(ctx.targetRoot, ".claude", "commands", `${inv}.md`),
-      content: withBanner(banner, fm + "\n" + doc.body),
+      content: withBanner(banner, fm + "\n" + body),
     };
   }
 
@@ -61,7 +69,7 @@ function commandFile(doc: CanonicalDoc, ctx: GenContext): GeneratedFile {
   ]);
   return {
     path: join(ctx.targetRoot, ".claude", "skills", inv, "SKILL.md"),
-    content: withBanner(banner, fm + "\n" + doc.body),
+    content: withBanner(banner, fm + "\n" + body),
   };
 }
 

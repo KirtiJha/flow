@@ -81,6 +81,14 @@ export interface RunGenOptions {
   legacyCommands?: boolean;
   /** Do not write; report what WOULD change. */
   check?: boolean;
+  /**
+   * "dev" (default): keep repo-relative invocations in generated command
+   * bodies. "install": rewrite them to the installed package's compiled scripts
+   * (requires `installDir`).
+   */
+  invocationMode?: "dev" | "install";
+  /** Absolute install-package root; used when invocationMode === "install". */
+  installDir?: string;
 }
 
 /**
@@ -104,7 +112,14 @@ export function runGen(opts: RunGenOptions): number {
     return 1;
   }
 
-  const ctx: GenContext = { sourceRoot, targetRoot, config, legacyCommands };
+  const ctx: GenContext = {
+    sourceRoot,
+    targetRoot,
+    config,
+    legacyCommands,
+    invocationMode: opts.invocationMode ?? "dev",
+    installDir: opts.installDir,
+  };
   const selected = ADAPTERS.filter((a) => !only || a.id === only);
   if (selected.length === 0) {
     console.error(`--only "${only}" matched no adapter. Known: ${ADAPTERS.map((a) => a.id).join(", ")}.`);

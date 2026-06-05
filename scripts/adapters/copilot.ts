@@ -24,6 +24,7 @@ import {
   resolveModel,
   buildFrontmatter,
   withBanner,
+  rewriteInvocations,
 } from "./shared.js";
 import { replaceMarkerRegion } from "../flow-core.js";
 
@@ -59,9 +60,15 @@ function promptFile(doc: CanonicalDoc, ctx: GenContext): GeneratedFile {
     ["model", model],
     ["tools", tools],
   ]);
+  // In install mode, rewrite repo-relative invocations to the installed
+  // package's compiled scripts before applying Copilot body translation.
+  const rawBody =
+    ctx.invocationMode === "install" && ctx.installDir
+      ? rewriteInvocations(doc.body, ctx.installDir)
+      : doc.body;
   return {
     path: join(ctx.targetRoot, ".github", "prompts", `${inv}.prompt.md`),
-    content: withBanner(banner, fm + "\n" + translateBody(doc.body)),
+    content: withBanner(banner, fm + "\n" + translateBody(rawBody)),
   };
 }
 

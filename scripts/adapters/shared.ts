@@ -40,6 +40,19 @@ export interface GenContext {
   config: FlowConfig;
   /** When true, Claude commands go to `.claude/commands/` instead of Skills. */
   legacyCommands: boolean;
+  /**
+   * "dev" (default): generated command bodies keep their repo-relative
+   * invocations (`npm run …`, `node --import tsx scripts/…`) which only resolve
+   * inside this repo. "install": rewrite those invocations to the installed
+   * package's compiled scripts by absolute path (see `installDir`).
+   */
+  invocationMode: "dev" | "install";
+  /**
+   * Absolute path to the installed package root (the dir containing `dist/`).
+   * Required when `invocationMode === "install"`; the rewrite targets
+   * `<installDir>/dist/scripts/<x>.js`.
+   */
+  installDir?: string;
 }
 
 export interface GeneratedFile {
@@ -189,4 +202,34 @@ function needsQuote(v: string): boolean {
 /** Prefix a generated file with the canonical banner. */
 export function withBanner(banner: string, content: string): string {
   return `${banner}\n${content}`;
+}
+
+// --- install-mode invocation rewrite -------------------------------------
+//
+// Canonical command bodies reference the dev repo's invocations
+// (`npm run budget -- …`, `node --import tsx scripts/flow-budget.ts …`). Those
+// only resolve inside this repository. When generating into a user's installed
+// project we rewrite them to call the package's compiled scripts by absolute
+// path so they work regardless of the user's cwd or toolchain.
+
+/**
+ * Rewrite the known cost-script invocations in a generated command body to the
+ * installed package's compiled scripts under `<installDir>/dist/scripts`.
+ *
+ * Replaces both the `npm run <x> --` forms and the
+ * `node --import tsx scripts/<x>.ts` forms with `node "<DIST>/<x>.js"`, leaving
+ * any trailing arguments intact. The dist path is normalized to forward slashes
+ * (Node accepts `/` on Windows) so the embedded command is shell-safe.
+ */
+export function rewriteInvocations(body: string, installDir: string): string {
+  const dist = `${installDir.replace(/\\/g, "/").replace(/\/+$/, "")}/dist/scripts`;
+  let out = body.replace(/\r\n/g, "\n");
+  for (const name of ["budget", "metrics", "compress"]) {
+    const target = `node "${dist}/flow-${name}.js"`;
+    // `npm run <name> --` → installed compiled script.
+    out = out.replaceAll(`npm run ${name} --`, target);
+    // `node --import tsx scripts/flow-<name>.ts` → installed compiled script.
+    out = out.replaceAll(`node --import tsx scripts/flow-${name}.ts`, target);
+  }
+  return out;
 }
