@@ -1,0 +1,9 @@
+# Normalize line endings. FLOW's generator parses LF-anchored frontmatter, so the
+# canonical source must stay LF regardless of the contributor's platform / autocrlf.
+* text=auto eol=lf
+
+# Binary assets, if any, should never be normalized.
+*.png binary
+*.jpg binary
+*.gif binary
+*.ico binary

@@ -63,7 +63,11 @@ export interface Adapter {
 // --- frontmatter parsing --------------------------------------------------
 
 /** Split a markdown doc into its YAML-ish frontmatter map and body. */
-export function parseDoc(name: string, kind: DocKind, raw: string): CanonicalDoc {
+export function parseDoc(name: string, kind: DocKind, rawInput: string): CanonicalDoc {
+  // Normalize line endings up front: source authored on Windows arrives as CRLF
+  // (and Git autocrlf rewrites it), which would otherwise defeat the LF-anchored
+  // frontmatter regex below and silently drop every frontmatter field.
+  const raw = rawInput.replace(/\r\n/g, "\n");
   const fm: Record<string, string> = {};
   let body = raw;
   const m = raw.match(/^---\n([\s\S]*?)\n---\n?([\s\S]*)$/);
