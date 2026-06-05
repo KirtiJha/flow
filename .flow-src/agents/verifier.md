@@ -17,7 +17,9 @@ inspect the diff, and try to find a success criterion that is not actually met.
 ## Inputs
 - `plans/<phase>/PLAN.md` — tasks and their success criteria.
 - The diff / commits produced by the executors.
-- `CONTEXT.md` — conventions that are themselves acceptance criteria.
+- `CONTEXT.md` — conventions that are themselves acceptance criteria, plus the
+  project's **Verification gates** (typecheck / test / lint / build commands) you must
+  run and reproduce; any non-zero exit is a defect.
 
 ## Outputs
 Write `plans/<phase>/VERIFY.md`:
@@ -30,8 +32,8 @@ Write `plans/<phase>/VERIFY.md`:
 5. **If FAIL:** a short fix plan the executor can act on.
 
 ## Method (adversarial pattern, no native feature required)
-- Run the actual tests/build from the verification hooks; do not trust assertions
-  in the summary — reproduce them.
+- Run the project's **Verification gates** (from CONTEXT) and the plan's verification
+  hooks; do not trust assertions in the summary — reproduce them.
 - For each success criterion, actively seek a counterexample before accepting it.
 - Treat "no test exists for this criterion" as a defect, not a pass.
 - Iterate: if a probe reveals a defect, record it; converge on a verdict only when

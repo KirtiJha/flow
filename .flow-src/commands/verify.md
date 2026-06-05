@@ -17,8 +17,10 @@ Current diff against the base:
 
 ## Run
 Spawn the **verifier** subagent in a fresh context. It must:
-- Run the plan's **verification hooks** (tests/build) and reproduce results — never
-  trust a summary's assertions.
+- Run the project's **Verification gates** from `.flow/CONTEXT.md` (typecheck / test /
+  lint / build) — a non-zero exit on any is a defect.
+- Run the plan's **verification hooks** and reproduce results — never trust a summary's
+  assertions.
 - Check **every** plan success criterion, seeking a counterexample for each
   (adversarial pattern). Treat untested/vacuous criteria as defects.
 - Write `plans/<phase>/VERIFY.md` with a one-word **Verdict: PASS|FAIL**, a

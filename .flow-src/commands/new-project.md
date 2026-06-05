@@ -23,7 +23,10 @@ is given, infer one from the workspace folder and state your inference.
    Do **not** overwrite files that already exist; report which were skipped.
 3. In `.flow/CONTEXT.md`, confirm the **runtime/proxy assumption** block is present
    (Claude Code → LiteLLM → Bedrock; native workflows out of scope) and fill in the
-   architecture / stack / conventions sections with what is known.
+   architecture / stack / conventions sections with what is known. Populate the
+   **Verification gates** by detecting the project's real commands (e.g. from
+   `package.json` scripts: typecheck / test / lint / build) — these are what the
+   verifier will run; use `none` where a gate doesn't apply.
 4. If brownfield, recommend running `/flow-map-codebase` before the first plan.
 
 ## After

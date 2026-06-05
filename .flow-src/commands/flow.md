@@ -28,6 +28,9 @@ Classify the request, unless the user forced a path with a flag:
 | full     | new subsystem / high risk / cross-cutting   | discuss → plan → review → execute → verify → ship   | independent multi-model |
 
 A flag (`--quick` / `--standard` / `--full`) overrides triage. Triage only suggests.
+Then apply any **Routing policy** in `.flow/CONTEXT.md`: a matching rule **raises** the
+path (e.g. work under a sensitive area forces `full`); it never lowers it. An explicit
+user flag still wins.
 
 ## 3. Announce
 Before doing any work, print: the chosen path, **why** (one line), the ordered

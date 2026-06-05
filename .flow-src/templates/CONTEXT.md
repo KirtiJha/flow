@@ -21,6 +21,26 @@
 - **Branching:** <branch model, e.g. trunk-based / feature branches>
 - **PR rules:** <review requirements, CI gates, merge policy>
 
+## Verification gates
+
+> The exact commands the **verifier** runs to check built work, on top of each plan's
+> success criteria. Keep them fast and deterministic — the verifier reproduces them and
+> treats a non-zero exit as a defect. Use `none` where a gate doesn't apply.
+
+- **typecheck:** <command, e.g. `npm run typecheck` — or `none`>
+- **test:** <command, e.g. `npm test` — or `none`>
+- **lint:** <command — or `none`>
+- **build:** <command — or `none`>
+
+## Routing policy (optional)
+
+> Project-specific triage overrides for `/flow`. Triage still classifies the request;
+> a matching rule here **raises** the path (never lowers it). Leave empty for default
+> triage.
+
+- <e.g. changes under `migrations/` or `auth/` → always `full`>
+- <e.g. anything touching the public API surface → at least `standard` (force review)>
+
 ## Directory map
 
 - <dir> — <purpose>
