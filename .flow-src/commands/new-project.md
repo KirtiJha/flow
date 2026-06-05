@@ -7,7 +7,11 @@ argument-hint: "<project name> [greenfield|brownfield]"
 
 # /flow-new-project — bootstrap FLOW state
 
-Project: **$1**  ·  Mode: **$2** (default greenfield)
+Arguments: **$ARGUMENTS**
+
+Parse them as `<project name> [greenfield|brownfield]`: the first token is the
+project name, an optional second token is the mode (default `greenfield`). If no name
+is given, infer one from the workspace folder and state your inference.
 
 ## Do
 1. Create `.flow/` (and `.flow/metrics/`) if missing.
