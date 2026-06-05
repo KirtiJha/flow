@@ -2,7 +2,9 @@
 
 > Cost governance for FLOW. `flow-budget` parses the cap table below, compares it
 > against recorded session spend, warns at the soft cap and **blocks at the hard
-> cap**. Tune from real runs (`flow-metrics`). Tokens are the unit.
+> cap**. Tokens are the unit. **Tune from real runs:** `flow-metrics calibrate`
+> prints each phase's p50/p95 and suggested soft/hard caps — adjust the table to fit
+> your project rather than trusting the seed defaults.
 
 ## Model tiers
 

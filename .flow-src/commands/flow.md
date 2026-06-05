@@ -34,6 +34,10 @@ Before doing any work, print: the chosen path, **why** (one line), the ordered
 phases, and a **token estimate** vs. the relevant caps from BUDGET.md. This is the
 proportionality gate — the main defense against runaway cost.
 
+Base the estimate on **recorded history**, not a blind guess: `npm run metrics --
+calibrate` prints each phase's p50/p95 from past runs. Use those medians where they
+exist; fall back to a conservative guess only with no history.
+
 ## 4. Budget gate
 At each phase boundary, run the budget check and respect it — substitute the phase
 and your token estimate:
