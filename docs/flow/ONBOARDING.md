@@ -5,6 +5,24 @@ through five disciplined phases — **Discuss → Plan → Execute → Verify �
 an optional **Review** before execute) — to prevent quality degradation ("context
 rot") on long or complex work.
 
+## Install (npx)
+
+To use FLOW in your own project, install it with `npx` — zero-install (the package
+ships precompiled `dist/`, so no `tsx`/build is needed on your machine):
+
+```bash
+npx @kirtijha/flow@latest --claude       # install into THIS project (default, local)
+npx @kirtijha/flow@latest --global       # install into ~/.claude (all projects)
+npx @kirtijha/flow@latest --copilot      # GitHub Copilot layout instead
+npx @kirtijha/flow@latest --all          # both runtimes
+npx @kirtijha/flow@latest --uninstall    # remove FLOW files + hooks (keeps .flow/ state)
+```
+
+It is **idempotent** (re-run to update; `.flow/` state is never clobbered and hooks
+are de-duped) and `--uninstall` **preserves `.flow/`** state. **Users install via
+`npx`; contributors clone** — the "Get started" steps below build FLOW from source
+and are only for developing FLOW itself.
+
 ## The core ideas
 
 1. **Ceremony earns its keep.** A one-line change must never trigger a full loop.
@@ -72,3 +90,18 @@ Wire the deterministic gates by copying `hooks/settings.example.json` into
 | `hooks/` | Budget gate, atomic-commit, metrics hooks |
 | `.flow/` | Live state + metrics (committed) |
 | `.claude/`, `.github/` | **Generated** — do not edit |
+
+## Publishing (maintainers)
+
+FLOW is published to npm as **`@kirtijha/flow`** and consumed via `npx` (see
+[Install](#install-npx)). The package ships **precompiled `dist/`** so end users need
+no toolchain:
+
+- The `files` whitelist in `package.json` ships only `dist/`, `bin/`, `.flow-src/`,
+  `hooks/`, `flow.config.json`, `docs/flow/`, and `README.md` — nothing else lands in
+  the tarball (verify with `npm pack --dry-run`).
+- `prepublishOnly` runs `npm run build`, so `dist/` is always recompiled from current
+  source before a publish.
+
+To cut a release: bump the `version` in `package.json`, then `npm publish` (this
+triggers `prepublishOnly` → build automatically).

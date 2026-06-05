@@ -18,7 +18,40 @@ npm run gen      # generate Claude Code (Skills) + Copilot layouts from .flow-sr
 Then in Claude Code: `/flow "add rate limiting to the public API"` — FLOW triages
 the request, announces the path and a token estimate, and runs it pausing at gates.
 
+## Install
+
+To **use** FLOW in your own project, install it with `npx` — no clone, no toolchain:
+
+```bash
+npx @kirtijha/flow@latest --claude       # install into THIS project (default, local)
+npx @kirtijha/flow@latest --global       # install into ~/.claude (all projects)
+npx @kirtijha/flow@latest --copilot      # GitHub Copilot layout instead
+npx @kirtijha/flow@latest --all          # both runtimes
+npx @kirtijha/flow@latest --uninstall    # remove FLOW files + hooks (keeps .flow/ state)
+```
+
+The installer scaffolds `.flow/` state, generates the runtime layout
+(`.claude/skills/…` and/or `.github/…`), and wires the three governance hooks into
+`.claude/settings.json` with absolute paths.
+
+- **Zero-install.** The package ships **precompiled `dist/`**, so users need no
+  `tsx`, no `tsc`, and no build step on their machine.
+- **Idempotent.** Re-run any time to update — generated files are refreshed, your
+  `.flow/` state is never clobbered, and hooks are de-duped (never doubled).
+- **`--global` vs `--local`.** `--local` (the default) targets the current project;
+  `--global` targets `~/.claude/` so the layout is available across all projects.
+- **`--uninstall`** removes FLOW-managed files and hook entries while **preserving
+  your `.flow/` state** (STATE / CONTEXT / BUDGET / metrics) entirely.
+
+> **Users install via `npx`; contributors clone.** The "First run" steps below are
+> only for cloning the dev repo to **develop FLOW itself** (they build from
+> `.flow-src/` with `tsx`). If you just want to *use* FLOW, the `npx` command above is
+> all you need.
+
 ## First run
+
+> This section is for **contributors** developing FLOW itself. To merely use FLOW in
+> your project, see [Install](#install) above.
 
 The runtime layouts and hook wiring are **not** committed (they are generated and
 machine-local), so a fresh clone needs two setup steps before the slash commands and
