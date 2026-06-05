@@ -1,5 +1,5 @@
 {
-  "$comment": "Authoritative build-time configuration for flow-gen. Model tiers map to names exposed by your LiteLLM `model_list` — NOT to raw Anthropic/Bedrock model IDs. Edit the right-hand values to match `litellm --config` on your gateway, then re-run `npm run gen`.",
+  "$comment": "Authoritative build-time configuration for flow-gen. Model tiers map to whatever the active runtime understands: for the LiteLLM->Bedrock path use your `model_list` names (e.g. flow-haiku); for plain Claude Code use its native size aliases (haiku/sonnet/opus) or `inherit`. Edit the right-hand values and re-run `npm run gen`.",
 
   "environment": {
     "path": "Claude Code -> LiteLLM -> Amazon Bedrock",
@@ -9,10 +9,10 @@
   },
 
   "modelTiers": {
-    "$comment": "left = FLOW canonical tier; right = LiteLLM model_list name your proxy serves.",
-    "low": "flow-haiku",
-    "mid": "flow-sonnet",
-    "high": "flow-opus"
+    "$comment": "left = FLOW canonical tier; right = the model name the runtime resolves. Set to native Claude Code size aliases for local use; swap to LiteLLM model_list names (flow-haiku/flow-sonnet/flow-opus) when routing through the gateway.",
+    "low": "haiku",
+    "mid": "sonnet",
+    "high": "opus"
   },
 
   "runtimes": {
