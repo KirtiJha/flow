@@ -8,11 +8,10 @@
     "node": ">=18"
   },
   "bin": {
-    "flow": "bin/install.js",
-    "flow-gen": "dist/scripts/flow-gen.js",
-    "flow-budget": "dist/scripts/flow-budget.js",
-    "flow-compress": "dist/scripts/flow-compress.js",
-    "flow-metrics": "dist/scripts/flow-metrics.js"
+    "flow": "bin/install.js"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "files": [
     "dist/",
