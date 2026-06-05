@@ -2,6 +2,16 @@
 
 All notable changes to `@kirtijha1986/flow`. Dates are UTC.
 
+## [0.4.3] — positioning & brand
+- README: competitive positioning vs. spec-driven tools (Spec Kit, OpenSpec, Task
+  Master, BMAD, Kiro) — honest comparison table, distinctive differentiators, and
+  caveats. Added the logo (light/dark), phase diagram, and architecture diagram.
+- `package.json`: added `repository` / `homepage` / `bugs` / `keywords` and README badges
+  (so relative image paths resolve on npm and the package is discoverable).
+
+## [0.4.2] — docs sync
+- Brought all guides in line with 0.2–0.4 behavior and added `CHANGELOG.md`.
+
 ## [0.4.1] — cross-platform hardening
 - Quote the test glob so POSIX shells pass it literally to Node (unquoted, `sh`
   mis-expands `**`).

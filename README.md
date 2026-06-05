@@ -1,24 +1,44 @@
-# FLOW
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/brand/flow-logo-full-dark.svg">
+    <img alt="FLOW — Fresh-context Loop for Orchestrated Work" src="docs/brand/flow-logo-full-light.svg" width="440">
+  </picture>
+</p>
 
-[![CI](https://github.com/KirtiJha/flow/actions/workflows/ci.yml/badge.svg)](https://github.com/KirtiJha/flow/actions/workflows/ci.yml)
+<p align="center">
+  <a href="https://github.com/KirtiJha/flow/actions/workflows/ci.yml"><img src="https://github.com/KirtiJha/flow/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  <a href="https://www.npmjs.com/package/@kirtijha1986/flow"><img src="https://img.shields.io/npm/v/@kirtijha1986/flow?color=cb3837&logo=npm" alt="npm"></a>
+  <img src="https://img.shields.io/badge/node-%E2%89%A518-3c873a?logo=node.js&logoColor=white" alt="node >=18">
+  <img src="https://img.shields.io/badge/license-MIT-blue" alt="MIT">
+</p>
 
-**Fresh-context Loop for Orchestrated Work.**
+<p align="center"><b>Fresh-context Loop for Orchestrated Work</b> — disciplined, cost-governed agent workflows for Claude Code &amp; GitHub Copilot.</p>
 
-FLOW drives an AI coding agent through five disciplined phases — **Discuss → Plan →
-Execute → Verify → Ship** (with an optional **Review** before execute) — to prevent
-quality degradation ("context rot") on long or complex work. Heavy work runs in
-**fresh-context subagents** so the main session stays lean. Durable state lives in
-committed files so a team shares one source of truth. Cost is visible and capped at
-every phase boundary. Commands and agents are **authored once** and **generated**
-into Claude Code and GitHub Copilot layouts.
+---
+
+Most spec-driven AI tools **generate and trust**: write a spec, fan out tasks, let the
+agent implement. FLOW is built for the part that comes after the demo — **shipping
+real changes you can stand behind.** It drives an AI coding agent through disciplined
+phases that each run in a **fresh-context subagent** (so quality doesn't rot as the
+context fills), **caps token spend per phase with a hard block**, and refuses to ship
+work an **independent verifier** hasn't passed. Authored once, generated into Claude
+Code and GitHub Copilot.
 
 ```bash
-npm install      # tsx + typescript
-npm run gen      # generate Claude Code (Skills) + Copilot layouts from .flow-src/
+npm install -g @kirtijha1986/flow && flow --claude   # install into your project
 ```
+Then in Claude Code: `/flow "add rate limiting to the public API"` — FLOW triages the
+request, announces the path + a token estimate, and runs it pausing at gates.
 
-Then in Claude Code: `/flow "add rate limiting to the public API"` — FLOW triages
-the request, announces the path and a token estimate, and runs it pausing at gates.
+## How it works
+
+Six phases, proportional to the work (`quick` skips most of them). Heavy phases run in
+isolated subagents; the main session only sees compact summaries. Verify is adversarial
+and **hard-gates Ship**.
+
+<p align="center">
+  <img alt="FLOW phases: Discuss, Plan, Review, Execute, Verify, Ship" src="docs/brand/flow_phase_diagram.svg" width="560">
+</p>
 
 ## Install
 
@@ -94,22 +114,61 @@ cp hooks/settings.example.json .claude/settings.json   # wire the budget / commi
 > (`haiku`/`sonnet`/`opus`); switch them to your LiteLLM `model_list` names when
 > routing through the gateway.
 
-## Why FLOW
+## Why FLOW — and how it's different
 
-- **Ceremony earns its keep.** Triage routes one-line changes to a `quick` path and
-  new subsystems to a `full` path. You can always override.
-- **Fresh context for heavy work.** Research, plan, execute, review, and verify each
-  run in a subagent that starts clean.
-- **State in files, not context.** `.flow/STATE.md`, `CONTEXT.md`, `BUDGET.md`, plus
-  per-phase artifacts and metrics — all committed.
-- **Cost is first-class.** `flow-budget` warns at the soft cap and **blocks at the
-  hard cap**; `flow-metrics` records per-phase spend and `flow-metrics calibrate`
-  suggests caps from your real history. Responses are **concise by default**
-  (`--verbose` for full narration).
-- **Verify has teeth.** `/flow-ship` is blocked until `VERIFY.md` records `PASS` — and
-  on standard/full, verify **auto-repairs** a FAIL within budget before giving up.
-- **One source, two runtimes.** Author in `.flow-src/`; `flow-gen` emits each
-  runtime's native layout with a `GENERATED` banner.
+The space is full of excellent **spec-driven** tools (GitHub Spec Kit, OpenSpec, Task
+Master, BMAD, Kiro). They shine at turning an idea into a spec and a task list. FLOW
+overlaps there, but its center of gravity is **governance and verification** — the
+things that decide whether agent output is actually safe to ship:
+
+|  | Spec&nbsp;Kit | OpenSpec | Task&nbsp;Master | BMAD | Kiro | **FLOW** |
+|--|:--:|:--:|:--:|:--:|:--:|:--:|
+| Spec / phase pipeline | ✅ | ✅ | tasks | ✅ | ✅ | ✅ |
+| **Fresh-context subagent per phase** | — | — | — | partial | — | **✅** |
+| **Per-phase token budget, hard-blocked** | — | — | — | — | — | **✅** |
+| **Caps calibrated from real spend (p50/p95)** | — | — | — | — | — | **✅** |
+| **Independent verifier + machine-enforced ship gate** | advisory | advisory | — | advisory | human | **✅** |
+| Proportional paths (skip the ceremony) | — | light | — | — | quick-plan | **✅** |
+| One source → native multi-runtime + hooks | many agents | many agents | many editors | several | own IDE | **✅** |
+
+<sub>Comparison from each tool's public docs (≈2026-06); competitors evolve — corrections welcome.</sub>
+
+**What's genuinely distinctive:**
+
+- **Cost is an enforced primitive, not a dashboard.** Every phase checks spend against a
+  cap and a deterministic hook **hard-blocks at the ceiling** (exit 2). None of the
+  surveyed spec-driven tools do spend-based blocking — that usually lives in separate
+  infra products.
+- **Budgets are measured, not guessed.** `flow-metrics calibrate` tunes caps from your
+  recorded p50/p95 spend.
+- **Verification has teeth — and separation of powers.** An independent verifier subagent,
+  write-restricted to `VERIFY.md` and unable to edit code or ship, must record `PASS` or
+  `/flow-ship` is mechanically blocked; on FAIL it **auto-repairs within budget**. That's
+  stronger than advisory QA personas (BMAD) or human-approval gates (Kiro).
+- **Fresh context per phase fights context rot.** Each heavy phase runs in its own
+  subagent window; the orchestrator stays lean. None of the surveyed tools isolate phases
+  this way.
+- **Proportional ceremony.** `quick` / `standard` / `full` — a one-line change skips the
+  pipeline; a project routing policy can only *raise* rigor, never silently lower it.
+- **One authored source, native to two runtimes.** Generated into Claude Code (Skills +
+  subagents + **deterministic hooks**) and GitHub Copilot — not just "works with many
+  agents," but emitting runtime-native governance.
+
+**Honest caveats:**
+
+- **Young and focused.** FLOW targets two runtimes and is early; Spec Kit / OpenSpec /
+  Task Master have far larger ecosystems and 20–30+ agent integrations, BMAD a richer
+  QA-role model, Kiro a more polished IDE.
+- **Opinionated environment.** Tuned for **Claude Code → LiteLLM → Bedrock**; budget
+  governance assumes you meter against that path (tiers map to LiteLLM names — swap to
+  native aliases for plain Claude Code). Native Dynamic Workflows are deliberately out of
+  scope ([rationale](docs/flow/DECISION-GUIDE.md)).
+- **A real gate means real friction.** `quick`-path work isn't shippable through
+  `/flow-ship` without first producing a `VERIFY.md` — intentional, but worth knowing.
+
+> **Use FLOW if** you want disciplined, cost-bounded, verify-gated delivery on Claude
+> Code / Copilot. **Reach for the others if** you want the broadest agent coverage, a
+> dedicated IDE, or the biggest community today.
 
 ## Runtime model
 
@@ -135,6 +194,17 @@ hard-coded Anthropic/Bedrock model IDs. See
 > The Copilot **CLI** does not support custom prompt files / slash commands. CLI
 > users get FLOW through the injected `copilot-instructions.md` (the one file the CLI
 > reads). FLOW does not claim CLI parity.
+
+## Architecture
+
+Author every command and agent **once** in `.flow-src/`. A generator (`flow-gen`) plus
+per-runtime adapters emit native layouts for each runtime; a small TypeScript cost layer
+(`flow-budget` / `flow-metrics` / `flow-compress`) and deterministic hooks enforce the
+governance. State lives in committed `.flow/` files.
+
+<p align="center">
+  <img alt="FLOW architecture: single source generated into Claude Code and Copilot, with a cost-control layer and hooks" src="docs/brand/flow_architecture_diagram.svg" width="560">
+</p>
 
 ## Layout
 

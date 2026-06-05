@@ -1,0 +1,42 @@
+<svg width="520" height="130" viewBox="0 0 520 130" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="FLOW — Fresh-context Loop for Orchestrated Work">
+  <title>FLOW</title>
+  <desc>Fresh-context Loop for Orchestrated Work. Fork-and-merge mark beside the FLOW wordmark.</desc>
+  <style>
+    .nd { fill: #534AB7; }
+    .ln { stroke: #7F77DD; }
+    .gate { fill: #0F6E56; }
+    .chk { stroke: #ffffff; }
+    .wm { fill: #1A1A19; }
+    .ex { fill: #73726C; font-family: Georgia, 'Times New Roman', serif; font-style: italic; font-size: 16px; letter-spacing: .2px; }
+    .ex .cap { fill: #3C3489; font-style: normal; }
+    @media (prefers-color-scheme: dark) {
+      .nd { fill: #AFA9EC; }
+      .ln { stroke: #7F77DD; }
+      .gate { fill: #1D9E75; }
+      .chk { stroke: #04342C; }
+      .wm { fill: #F5F4EF; }
+      .ex { fill: #9C9A92; }
+      .ex .cap { fill: #CECBF6; }
+    }
+  </style>
+  <g transform="translate(12,17) scale(0.96)">
+    <circle class="nd" cx="16" cy="50" r="8"/>
+    <path class="ln" d="M21 46 Q42 26 64 20" fill="none" stroke-width="5.5" stroke-linecap="round"/>
+    <path class="ln" d="M23 50 L62 50" fill="none" stroke-width="5.5" stroke-linecap="round"/>
+    <path class="ln" d="M21 54 Q42 74 64 80" fill="none" stroke-width="5.5" stroke-linecap="round"/>
+    <circle class="nd" cx="68" cy="20" r="7"/>
+    <circle class="nd" cx="66" cy="50" r="7"/>
+    <circle class="nd" cx="68" cy="80" r="7"/>
+    <path class="ln" d="M73 24 Q86 38 87 49" fill="none" stroke-width="5.5" stroke-linecap="round"/>
+    <path class="ln" d="M73 76 Q86 62 87 51" fill="none" stroke-width="5.5" stroke-linecap="round"/>
+    <circle class="gate" cx="89" cy="50" r="10"/>
+    <path class="chk" d="M84 50 L88 54 L94 46" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <g class="wm" transform="translate(132,92)">
+      <path transform="translate(0.00,0) scale(0.07429,-0.07429)" d="M519 702V565H233V417H447V284H233V0H62V702Z"/>
+      <path transform="translate(38.41,0) scale(0.07429,-0.07429)" d="M233 132H457V0H62V702H233Z"/>
+      <path transform="translate(71.61,0) scale(0.07429,-0.07429)" d="M33 353Q33 456 81.5 538.0Q130 620 212.5 666.0Q295 712 394 712Q493 712 575.5 666.0Q658 620 705.5 538.0Q753 456 753 353Q753 250 705.0 167.5Q657 85 575.0 39.0Q493 -7 394 -7Q295 -7 212.5 39.0Q130 85 81.5 167.5Q33 250 33 353ZM579 353Q579 446 528.5 501.5Q478 557 394 557Q309 557 258.5 502.0Q208 447 208 353Q208 260 258.5 204.5Q309 149 394 149Q478 149 528.5 205.0Q579 261 579 353Z"/>
+      <path transform="translate(127.77,0) scale(0.07429,-0.07429)" d="M1028 702 845 0H638L526 462L410 0H203L25 702H208L309 191L434 702H622L742 191L844 702Z"/>
+  </g>
+  <text class="ex" x="134" y="116"><tspan class="cap">F</tspan>resh-context <tspan class="cap">L</tspan>oop for <tspan class="cap">O</tspan>rchestrated <tspan class="cap">W</tspan>ork</text>
+</svg>

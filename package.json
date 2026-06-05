@@ -1,6 +1,6 @@
 {
   "name": "@kirtijha1986/flow",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "private": false,
   "description": "FLOW — Fresh-context Loop for Orchestrated Work. A disciplined five-phase agent loop authored once and generated into Claude Code and GitHub Copilot layouts.",
   "type": "module",
@@ -39,5 +39,23 @@
     "typescript": "^5.6.3",
     "@types/node": "^20.16.0"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KirtiJha/flow.git"
+  },
+  "homepage": "https://github.com/KirtiJha/flow#readme",
+  "bugs": "https://github.com/KirtiJha/flow/issues",
+  "keywords": [
+    "claude-code",
+    "github-copilot",
+    "ai-coding",
+    "agent",
+    "subagents",
+    "workflow",
+    "spec-driven",
+    "orchestration",
+    "verification",
+    "token-budget"
+  ]
 }
