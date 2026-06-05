@@ -1,5 +1,7 @@
 # FLOW
 
+[![CI](https://github.com/KirtiJha/flow/actions/workflows/ci.yml/badge.svg)](https://github.com/KirtiJha/flow/actions/workflows/ci.yml)
+
 **Fresh-context Loop for Orchestrated Work.**
 
 FLOW drives an AI coding agent through five disciplined phases — **Discuss → Plan →
@@ -101,9 +103,11 @@ cp hooks/settings.example.json .claude/settings.json   # wire the budget / commi
 - **State in files, not context.** `.flow/STATE.md`, `CONTEXT.md`, `BUDGET.md`, plus
   per-phase artifacts and metrics — all committed.
 - **Cost is first-class.** `flow-budget` warns at the soft cap and **blocks at the
-  hard cap**; `flow-compress` trims tool output before it enters context;
-  `flow-metrics` appends one record per session.
-- **Verify has teeth.** `/flow-ship` is blocked until `VERIFY.md` records `PASS`.
+  hard cap**; `flow-metrics` records per-phase spend and `flow-metrics calibrate`
+  suggests caps from your real history. Responses are **concise by default**
+  (`--verbose` for full narration).
+- **Verify has teeth.** `/flow-ship` is blocked until `VERIFY.md` records `PASS` — and
+  on standard/full, verify **auto-repairs** a FAIL within budget before giving up.
 - **One source, two runtimes.** Author in `.flow-src/`; `flow-gen` emits each
   runtime's native layout with a `GENERATED` banner.
 
@@ -157,15 +161,17 @@ flow.config.json      tier→LiteLLM mapping, runtime toggles, banner
 | `npm run gen -- --check` | Report drift without writing (CI). |
 | `npm run gen -- --only copilot` | Generate a single runtime. |
 | `npm run budget -- show` / `check <phase>` | Inspect / enforce per-phase caps. |
-| `npm run compress` | Compress tool output on stdin (preserves errors/summaries). |
 | `npm run metrics -- summary` | Spend / rework summary from `.flow/metrics/`. |
-| `npm run typecheck` | Type-check all scripts. |
+| `npm run metrics -- calibrate` | Per-phase p50/p95 → suggested caps vs. current. |
+| `npm run compress` | Compress tool output on stdin (preserves errors/summaries). |
+| `npm run typecheck` / `npm test` | Type-check / run the test suite. |
 
 ## Documentation
 
 - [Onboarding](docs/flow/ONBOARDING.md)
 - [Commands & agents reference](docs/flow/COMMANDS.md)
 - [Decision guide](docs/flow/DECISION-GUIDE.md)
+- [Changelog](CHANGELOG.md)
 
 ## License
 

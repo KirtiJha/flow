@@ -33,8 +33,10 @@ and are only for developing FLOW itself.
 3. **State lives in files.** Anything that must survive a session is in `.flow/`
    (`STATE.md`, `CONTEXT.md`, `BUDGET.md`, artifacts, metrics) — committed, so the
    whole team shares one source of truth.
-4. **Cost is first-class.** Spend vs. cap is shown at every phase boundary; tool
-   output is compressed before it enters context; metrics append per session.
+4. **Cost is first-class.** Each phase's real spend is recorded and checked against
+   caps (queryable via `/flow-status` and `flow-metrics`); tune caps from history with
+   `flow-metrics calibrate`. Responses are **concise by default** — pass `--verbose`
+   for the full phase-by-phase narration.
 5. **Verify has teeth.** Ship is **blocked** until VERIFY records PASS.
 6. **One authored source.** Commands/agents are authored once in `.flow-src/` and
    **generated** into Claude Code and Copilot layouts. Never hand-edit generated
@@ -73,7 +75,9 @@ Then, in Claude Code, start with `/flow "<your request>"` — it triages, announ
 the path and a token estimate, and runs it pausing at gates. Every phase is also
 runnable standalone (`/flow-plan`, `/flow-verify`, …). To bootstrap a brand-new
 project's state, run `/flow-new-project "<name>"` (and `/flow-map-codebase` first for
-brownfield).
+brownfield) — it seeds `.flow/CONTEXT.md`, including the project's **Verification
+gates** (the typecheck/test/lint/build commands the verifier runs) and an optional
+**Routing policy**. See [DECISION-GUIDE](DECISION-GUIDE.md#per-project-configuration-flowcontextmd).
 
 Wire the deterministic gates by copying `hooks/settings.example.json` into
 `.claude/settings.json` (see `hooks/README.md`).

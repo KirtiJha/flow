@@ -23,13 +23,24 @@ Names below are the generated invocations (`flow` is bare; the rest are namespac
 | `/flow-add-todo` | (anytime) | low | STATE | appends to Open items |
 
 ### Notes
-- **`/flow`** triages (quick/standard/full), announces the path + token estimate,
-  and runs it pausing at gates. Overridable with `--quick` / `--standard` / `--full`.
+- **`/flow`** triages (quick/standard/full), announces the path + token estimate
+  (based on recorded medians where available), and runs it pausing at gates.
+  Overridable with `--quick` / `--standard` / `--full`.
 - **`/flow-execute`** is FLOW's own orchestrator: it runs plan tasks in **parallel
   waves** (modest concurrency, never hundreds of agents) via fresh-context
   executors, **one atomic commit per task**. The `execute` budget cap is per wave.
+- **`/flow-verify`** runs the project's **Verification gates** (from CONTEXT) + the
+  plan's hooks, adversarially. On `standard`/`full` a FAIL **auto-repairs** within
+  budget (executor → re-verify, up to 2 rounds); `--no-repair` disables it.
 - **`/flow-ship`** is **blocked** unless `VERIFY.md` shows `Verdict: PASS`.
 - **`/flow-add-todo`** parks an idea in STATE without touching the active phase.
+
+### Output & flags
+- **Concise by default:** commands announce briefly, pause at gates, and end with one
+  compact summary. Detail lives in the artifacts and `/flow-status`. Pass **`--verbose`**
+  to any command for the full phase-by-phase narration.
+- **Helper scripts:** `npm run budget -- show|check`, `npm run metrics -- summary`,
+  and `npm run metrics -- calibrate` (per-phase p50/p95 → suggested caps).
 
 ## Agents (subagents)
 

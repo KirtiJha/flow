@@ -52,15 +52,29 @@ native feature and works through the proxy.
   action). The decisions log is **append-only**.
 - **CONTEXT.md** — when conventions, architecture, or the directory map change.
   Keep the runtime/proxy assumption block intact.
-- **BUDGET.md** — tune caps from real `flow-metrics summary` output. The running-
+- **BUDGET.md** — tune caps from real runs: `flow-metrics calibrate` prints each
+  phase's p50/p95 and suggested soft/hard caps (vs. your current ones). The running-
   spend table is auto-appended; don't hand-edit it.
 
 ## When verify FAILS
 
-`/flow-verify` writes `Verdict: FAIL` with a fix plan. Route the fix plan back to
-`/flow-execute` (one atomic commit per fix), then re-run `/flow-verify`. **Do not**
-ship — `/flow-ship` is hard-gated on PASS. Repeated verify passes show up in metrics
-as a rework signal; use them to tune plan quality.
+On `standard`/`full`, `/flow-verify` **auto-repairs within budget**: it spawns an
+executor for the verifier's fix plan and re-verifies, up to **2 rounds**, stopping
+immediately if a budget hard cap would be hit. Pass `--no-repair` to disable; `quick`
+never repairs. If repair is exhausted or off, the verdict stays `FAIL` — route the fix
+plan to `/flow-execute` (one atomic commit per fix) and re-run. **Never ship on FAIL**;
+`/flow-ship` is hard-gated on PASS. A *single milestone* verified more than once shows
+up in `flow-metrics` as a rework signal — use it to tune plan quality.
+
+## Per-project configuration (`.flow/CONTEXT.md`)
+
+Two project-level knobs live in CONTEXT, so they travel with the repo (not the
+read-only package):
+- **Verification gates** — the exact `typecheck` / `test` / `lint` / `build` commands
+  the verifier runs and reproduces; a non-zero exit on any is a defect.
+- **Routing policy** (optional) — rules that **raise** the triaged path for sensitive
+  areas (e.g. changes under `auth/` → `full`). They never lower it; an explicit
+  `--quick/--standard/--full` flag still wins.
 
 ## Runtime-specific isolation caveat
 

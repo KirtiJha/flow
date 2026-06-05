@@ -1,6 +1,6 @@
 {
   "name": "@kirtijha1986/flow",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "private": false,
   "description": "FLOW — Fresh-context Loop for Orchestrated Work. A disciplined five-phase agent loop authored once and generated into Claude Code and GitHub Copilot layouts.",
   "type": "module",
@@ -20,7 +20,8 @@
     ".flow-src/",
     "flow.config.json",
     "docs/flow/",
-    "README.md"
+    "README.md",
+    "CHANGELOG.md"
   ],
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
