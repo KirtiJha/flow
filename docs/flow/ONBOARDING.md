@@ -11,11 +11,11 @@ To use FLOW in your own project, install it with `npx` — zero-install (the pac
 ships precompiled `dist/`, so no `tsx`/build is needed on your machine):
 
 ```bash
-npx @kirtijha/flow@latest --claude       # install into THIS project (default, local)
-npx @kirtijha/flow@latest --global       # install into ~/.claude (all projects)
-npx @kirtijha/flow@latest --copilot      # GitHub Copilot layout instead
-npx @kirtijha/flow@latest --all          # both runtimes
-npx @kirtijha/flow@latest --uninstall    # remove FLOW files + hooks (keeps .flow/ state)
+npx @kirtijha1986/flow@latest --claude       # install into THIS project (default, local)
+npx @kirtijha1986/flow@latest --global       # install into ~/.claude (all projects)
+npx @kirtijha1986/flow@latest --copilot      # GitHub Copilot layout instead
+npx @kirtijha1986/flow@latest --all          # both runtimes
+npx @kirtijha1986/flow@latest --uninstall    # remove FLOW files + hooks (keeps .flow/ state)
 ```
 
 It is **idempotent** (re-run to update; `.flow/` state is never clobbered and hooks
@@ -93,7 +93,7 @@ Wire the deterministic gates by copying `hooks/settings.example.json` into
 
 ## Publishing (maintainers)
 
-FLOW is published to npm as **`@kirtijha/flow`** and consumed via `npx` (see
+FLOW is published to npm as **`@kirtijha1986/flow`** and consumed via `npx` (see
 [Install](#install-npx)). The package ships **precompiled `dist/`** so end users need
 no toolchain:
 
@@ -102,7 +102,7 @@ no toolchain:
   the tarball (verify with `npm pack --dry-run`).
 - `prepublishOnly` runs `npm run build`, so `dist/` is always recompiled from current
   source before a publish.
-- The package is **scoped** (`@kirtijha/flow`), so it must be published with public
+- The package is **scoped** (`@kirtijha1986/flow`), so it must be published with public
   access. `publishConfig.access` is set to `public`, but pass the flag explicitly to
   be safe — scoped packages default to *restricted* otherwise.
 

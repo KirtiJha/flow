@@ -25,7 +25,7 @@ To **use** FLOW in your own project — no clone, no toolchain. Install the pack
 
 ```bash
 # Recommended: global install (stable, available in every project)
-npm install -g @kirtijha/flow
+npm install -g @kirtijha1986/flow
 flow --claude          # install into THIS project (default, local scope)
 flow --global          # install into ~/.claude (all projects)
 flow --copilot         # GitHub Copilot layout instead
@@ -36,7 +36,7 @@ flow --uninstall       # remove FLOW files + hooks (keeps .flow/ state)
 Or pin it to a single project as a dev dependency:
 
 ```bash
-npm install -D @kirtijha/flow
+npm install -D @kirtijha1986/flow
 npx flow --claude
 ```
 
@@ -54,9 +54,9 @@ loads the hooks.
 - **`--uninstall`** removes FLOW-managed files and hook entries while **preserving
   your `.flow/` state** (STATE / CONTEXT / BUDGET / metrics) entirely.
 
-> **Why a persistent install (not bare `npx @kirtijha/flow`)?** The installer wires
+> **Why a persistent install (not bare `npx @kirtijha1986/flow`)?** The installer wires
 > hooks and command invocations using absolute paths into the installed package. A
-> one-shot `npx @kirtijha/flow` runs from npm's temporary `_npx` cache, which can be
+> one-shot `npx @kirtijha1986/flow` runs from npm's temporary `_npx` cache, which can be
 > evicted later — breaking those paths. A global or dev-dependency install gives the
 > package a stable home, so the wiring keeps working.
 
