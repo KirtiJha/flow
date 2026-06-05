@@ -25,6 +25,26 @@ export interface MetricRecord {
   withinCap: boolean;
   path?: string;
   note?: string;
+  /** Milestone/phase-slug this record belongs to (e.g. "cli"); enables per-milestone rework detection. */
+  milestone?: string;
+}
+
+/**
+ * Rework signal: re-entering verify for the SAME milestone (a second verify pass
+ * after a first) is the real rework marker. Counting verify runs globally would
+ * false-positive across distinct milestones (each verified once), so only records
+ * that carry a `milestone` count — and only a milestone verified more than once
+ * trips the signal. Untagged records never raise a false alarm.
+ */
+export function detectRework(recs: MetricRecord[]): string {
+  const verifyByMilestone = new Map<string, number>();
+  for (const r of recs) {
+    if (r.phase !== "verify" || !r.milestone) continue;
+    verifyByMilestone.set(r.milestone, (verifyByMilestone.get(r.milestone) ?? 0) + 1);
+  }
+  const reworked = [...verifyByMilestone.entries()].filter(([, n]) => n > 1);
+  if (reworked.length === 0) return "no rework signal";
+  return reworked.map(([m, n]) => `${m} re-verified ${n}×`).join(", ") + " (possible rework)";
 }
 
 function monthKey(d = new Date()): string {
@@ -61,7 +81,7 @@ function cmdAppend(args: string[]): number {
   const phase = strFlag(args, "--phase");
   const tokensRaw = strFlag(args, "--tokens");
   if (!phase || tokensRaw === undefined) {
-    console.error('usage: flow-metrics append --phase <p> --tokens N [--within-cap true|false] [--path ...] [--note "..."]');
+    console.error('usage: flow-metrics append --phase <p> --tokens N [--within-cap true|false] [--milestone <slug>] [--path ...] [--note "..."]');
     return 1;
   }
   const tokens = parseInt(tokensRaw.replace(/[_,\s]/g, ""), 10);
@@ -77,6 +97,7 @@ function cmdAppend(args: string[]): number {
     withinCap,
     path: strFlag(args, "--path"),
     note: strFlag(args, "--note"),
+    milestone: strFlag(args, "--milestone"),
   };
   const file = appendRecord(rec);
   console.log(`[metrics] appended ${phase} ${tokens.toLocaleString("en-US")} tok (within-cap=${withinCap}) → ${file}`);
@@ -103,9 +124,7 @@ function cmdSummary(args: string[]): number {
     byPhase.set(r.phase, e);
   }
 
-  // Rework proxy: tokens spent re-entering verify/review after a first pass.
-  const verifyRuns = byPhase.get("verify")?.n ?? 0;
-  const reworkSignal = verifyRuns > 1 ? `${verifyRuns} verify passes (possible rework)` : "no rework signal";
+  const reworkSignal = detectRework(recs);
 
   console.log(`FLOW metrics — ${month}`);
   console.log(`  sessions/phases recorded: ${recs.length}`);
