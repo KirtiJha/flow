@@ -1,0 +1,31 @@
+name: CI
+
+# Cross-platform verification: build, typecheck, and the full test suite (which
+# includes the install integration test — it packs nothing but drives bin/install.js
+# into a temp dir) on Linux, macOS, and Windows. This is the authoritative proof that
+# FLOW works on all three, not just the maintainer's machine.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  verify:
+    name: ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install
+      - run: npm run build
+      - run: npm run typecheck
+      - run: npm test
+      - name: Generator round-trip is clean
+        run: npm run gen -- --check
