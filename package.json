@@ -1,6 +1,6 @@
 {
   "name": "@kirtijha1986/flow",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": false,
   "description": "FLOW — Fresh-context Loop for Orchestrated Work. A disciplined five-phase agent loop authored once and generated into Claude Code and GitHub Copilot layouts.",
   "type": "module",
