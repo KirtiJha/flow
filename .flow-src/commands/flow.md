@@ -62,5 +62,9 @@ subagents** (planner, reviewer, executor waves, verifier). After each phase:
 **Ship is blocked unless the current phase `VERIFY.md` shows PASS.** This is the
 only enforced cross-command constraint; everything else is suggestion.
 
+On `standard`/`full`, verify **auto-repairs** a FAIL within budget — it spawns an
+executor for the fix plan and re-verifies, up to 2 rounds, stopping at the budget cap
+(see `/flow-verify`). Pass `--no-repair` to disable. `quick` never auto-repairs.
+
 Each phase is also runnable standalone (`/flow-discuss`, `/flow-plan`, …). You are
 the convenient front door, not a required one.
