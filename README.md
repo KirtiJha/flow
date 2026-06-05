@@ -20,22 +20,33 @@ the request, announces the path and a token estimate, and runs it pausing at gat
 
 ## Install
 
-To **use** FLOW in your own project, install it with `npx` — no clone, no toolchain:
+To **use** FLOW in your own project — no clone, no toolchain. Install the package
+**persistently** (globally or as a dev dependency), then run `flow`:
 
 ```bash
-npx @kirtijha/flow@latest --claude       # install into THIS project (default, local)
-npx @kirtijha/flow@latest --global       # install into ~/.claude (all projects)
-npx @kirtijha/flow@latest --copilot      # GitHub Copilot layout instead
-npx @kirtijha/flow@latest --all          # both runtimes
-npx @kirtijha/flow@latest --uninstall    # remove FLOW files + hooks (keeps .flow/ state)
+# Recommended: global install (stable, available in every project)
+npm install -g @kirtijha/flow
+flow --claude          # install into THIS project (default, local scope)
+flow --global          # install into ~/.claude (all projects)
+flow --copilot         # GitHub Copilot layout instead
+flow --all             # both runtimes
+flow --uninstall       # remove FLOW files + hooks (keeps .flow/ state)
+```
+
+Or pin it to a single project as a dev dependency:
+
+```bash
+npm install -D @kirtijha/flow
+npx flow --claude
 ```
 
 The installer scaffolds `.flow/` state, generates the runtime layout
 (`.claude/skills/…` and/or `.github/…`), and wires the three governance hooks into
-`.claude/settings.json` with absolute paths.
+`.claude/settings.json` with absolute paths. Restart Claude Code afterward so it
+loads the hooks.
 
-- **Zero-install.** The package ships **precompiled `dist/`**, so users need no
-  `tsx`, no `tsc`, and no build step on their machine.
+- **Zero build.** The package ships **precompiled `dist/`**, so you need no `tsx`,
+  no `tsc`, and no build step.
 - **Idempotent.** Re-run any time to update — generated files are refreshed, your
   `.flow/` state is never clobbered, and hooks are de-duped (never doubled).
 - **`--global` vs `--local`.** `--local` (the default) targets the current project;
@@ -43,10 +54,16 @@ The installer scaffolds `.flow/` state, generates the runtime layout
 - **`--uninstall`** removes FLOW-managed files and hook entries while **preserving
   your `.flow/` state** (STATE / CONTEXT / BUDGET / metrics) entirely.
 
-> **Users install via `npx`; contributors clone.** The "First run" steps below are
+> **Why a persistent install (not bare `npx @kirtijha/flow`)?** The installer wires
+> hooks and command invocations using absolute paths into the installed package. A
+> one-shot `npx @kirtijha/flow` runs from npm's temporary `_npx` cache, which can be
+> evicted later — breaking those paths. A global or dev-dependency install gives the
+> package a stable home, so the wiring keeps working.
+
+> **Users install the package; contributors clone.** The "First run" steps below are
 > only for cloning the dev repo to **develop FLOW itself** (they build from
-> `.flow-src/` with `tsx`). If you just want to *use* FLOW, the `npx` command above is
-> all you need.
+> `.flow-src/` with `tsx`). If you just want to *use* FLOW, the install above is all
+> you need.
 
 ## First run
 

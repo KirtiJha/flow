@@ -102,6 +102,12 @@ no toolchain:
   the tarball (verify with `npm pack --dry-run`).
 - `prepublishOnly` runs `npm run build`, so `dist/` is always recompiled from current
   source before a publish.
+- The package is **scoped** (`@kirtijha/flow`), so it must be published with public
+  access. `publishConfig.access` is set to `public`, but pass the flag explicitly to
+  be safe — scoped packages default to *restricted* otherwise.
 
-To cut a release: bump the `version` in `package.json`, then `npm publish` (this
-triggers `prepublishOnly` → build automatically).
+To cut a release: `npm login`, bump the `version` in `package.json`, then:
+
+```bash
+npm publish --access public   # triggers prepublishOnly -> build automatically
+```
