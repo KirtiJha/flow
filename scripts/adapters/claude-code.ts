@@ -46,7 +46,7 @@ function commandFile(doc: CanonicalDoc, ctx: GenContext): GeneratedFile {
       ["argument-hint", doc.frontmatter["argument-hint"] ?? ""],
     ]);
     return {
-      path: join(ctx.root, ".claude", "commands", `${inv}.md`),
+      path: join(ctx.targetRoot, ".claude", "commands", `${inv}.md`),
       content: withBanner(banner, fm + "\n" + doc.body),
     };
   }
@@ -60,7 +60,7 @@ function commandFile(doc: CanonicalDoc, ctx: GenContext): GeneratedFile {
     ["argument-hint", doc.frontmatter["argument-hint"] ?? ""],
   ]);
   return {
-    path: join(ctx.root, ".claude", "skills", inv, "SKILL.md"),
+    path: join(ctx.targetRoot, ".claude", "skills", inv, "SKILL.md"),
     content: withBanner(banner, fm + "\n" + doc.body),
   };
 }
@@ -76,14 +76,14 @@ function agentFile(doc: CanonicalDoc, ctx: GenContext): GeneratedFile {
     ["model", model],
   ]);
   return {
-    path: join(ctx.root, ".claude", "agents", `${doc.name}.md`),
+    path: join(ctx.targetRoot, ".claude", "agents", `${doc.name}.md`),
     content: withBanner(banner, fm + "\n" + doc.body),
   };
 }
 
 /** Inject a FLOW block into CLAUDE.md that references .flow/CONTEXT.md. */
 function claudeMd(commands: CanonicalDoc[], ctx: GenContext): GeneratedFile {
-  const path = join(ctx.root, "CLAUDE.md");
+  const path = join(ctx.targetRoot, "CLAUDE.md");
   const existing = existsSync(path) ? readFileSync(path, "utf8") : "";
   const list = commands
     .map((c) => `- \`/${invocation(c.name)}\` — ${c.frontmatter["description"] ?? ""}`)

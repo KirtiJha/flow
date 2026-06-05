@@ -33,7 +33,10 @@ export interface FlowConfig {
 }
 
 export interface GenContext {
-  root: string;
+  /** Where canonical docs/config/banner are read from. */
+  sourceRoot: string;
+  /** Where generated runtime files are written. */
+  targetRoot: string;
   config: FlowConfig;
   /** When true, Claude commands go to `.claude/commands/` instead of Skills. */
   legacyCommands: boolean;

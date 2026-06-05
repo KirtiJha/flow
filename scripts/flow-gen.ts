@@ -8,12 +8,16 @@
  * never disturbed.
  *
  * Usage:
- *   flow-gen [--legacy-commands] [--only claude-code|copilot] [--check] [--root DIR]
+ *   flow-gen [--legacy-commands] [--only claude-code|copilot] [--check]
+ *            [--root DIR] [--source DIR] [--target DIR]
  *
  *   --legacy-commands  emit .claude/commands/ instead of the Skills layout
  *   --only <id>        generate just one runtime
  *   --check            do not write; report what WOULD change (round-trip check)
- *   --root <dir>       project root (default: nearest dir containing flow.config.json)
+ *   --root <dir>       set BOTH source and target (default: nearest dir with
+ *                      flow.config.json). Back-compat alias.
+ *   --source <dir>     read canonical docs/config/banner from here
+ *   --target <dir>     write generated runtime files here
  */
 
 import {
@@ -24,6 +28,7 @@ import {
   writeFileSync,
 } from "node:fs";
 import { dirname, join, resolve } from "node:path";
+import { pathToFileURL } from "node:url";
 import {
   parseDoc,
   loadConfig,
@@ -65,29 +70,52 @@ function strFlag(args: string[], name: string): string | undefined {
   return i !== -1 && i + 1 < args.length ? args[i + 1] : undefined;
 }
 
-function main(argv: string[]): number {
-  const legacyCommands = argv.includes("--legacy-commands");
-  const check = argv.includes("--check");
-  const only = strFlag(argv, "--only");
-  const root = findRoot(strFlag(argv, "--root") ?? process.cwd());
+export interface RunGenOptions {
+  /** Read canonical docs/config/banner from here (default: findRoot(cwd)). */
+  source?: string;
+  /** Write generated runtime files here (default: same as source). */
+  target?: string;
+  /** Generate just one runtime (adapter id). */
+  only?: string;
+  /** Emit .claude/commands/ instead of the Skills layout. */
+  legacyCommands?: boolean;
+  /** Do not write; report what WOULD change. */
+  check?: boolean;
+}
 
-  const config = loadConfig(join(root, "flow.config.json"));
-  const commands = loadDocs(join(root, ".flow-src", "commands"), "command");
-  const agents = loadDocs(join(root, ".flow-src", "agents"), "agent");
+/**
+ * Programmatic entry point: generate per-runtime layouts. Reads canonical
+ * docs/config from `source`, writes outputs under `target`. Returns the process
+ * exit code (0 ok; 1 input error; 3 drift detected in --check mode).
+ */
+export function runGen(opts: RunGenOptions): number {
+  const legacyCommands = opts.legacyCommands ?? false;
+  const check = opts.check ?? false;
+  const only = opts.only;
+  const sourceRoot = opts.source ?? findRoot(process.cwd());
+  const targetRoot = opts.target ?? sourceRoot;
+
+  const config = loadConfig(join(sourceRoot, "flow.config.json"));
+  const commands = loadDocs(join(sourceRoot, ".flow-src", "commands"), "command");
+  const agents = loadDocs(join(sourceRoot, ".flow-src", "agents"), "agent");
 
   if (commands.length === 0 && agents.length === 0) {
     console.error("No canonical docs found under .flow-src/. Nothing to generate.");
     return 1;
   }
 
-  const ctx: GenContext = { root, config, legacyCommands };
+  const ctx: GenContext = { sourceRoot, targetRoot, config, legacyCommands };
   const selected = ADAPTERS.filter((a) => !only || a.id === only);
   if (selected.length === 0) {
     console.error(`--only "${only}" matched no adapter. Known: ${ADAPTERS.map((a) => a.id).join(", ")}.`);
     return 1;
   }
 
-  console.log(`flow-gen — root ${root}`);
+  console.log(
+    sourceRoot === targetRoot
+      ? `flow-gen — root ${sourceRoot}`
+      : `flow-gen — source ${sourceRoot} → target ${targetRoot}`,
+  );
   console.log(`  ${commands.length} command(s), ${agents.length} agent(s); layout: ${legacyCommands ? "legacy-commands" : "skills"}${check ? "; CHECK (dry-run)" : ""}`);
 
   let changed = 0;
@@ -104,7 +132,7 @@ function main(argv: string[]): number {
       total++;
       const status = writeFile(f, check);
       if (status !== "unchanged") changed++;
-      console.log(`  ${status.padEnd(9)} ${relativize(root, f.path)}`);
+      console.log(`  ${status.padEnd(9)} ${relativize(targetRoot, f.path)}`);
     }
     for (const n of result.notices) console.log(`  • ${n}`);
     for (const w of result.warnings) {
@@ -143,4 +171,25 @@ function relativize(root: string, p: string): string {
   return p.startsWith(root) ? p.slice(root.length + 1) : p;
 }
 
-process.exit(main(process.argv.slice(2)));
+/** Parse argv into RunGenOptions and delegate to runGen. */
+function main(argv: string[]): number {
+  const rootFlag = strFlag(argv, "--root");
+  const sourceFlag = strFlag(argv, "--source") ?? rootFlag;
+  const targetFlag = strFlag(argv, "--target") ?? rootFlag;
+  // findRoot walks up to the nearest flow.config.json so a path inside the repo
+  // still resolves; default source = nearest root from cwd, target = source.
+  const source = findRoot(sourceFlag ?? process.cwd());
+  const target = targetFlag ? findRoot(targetFlag) : source;
+  return runGen({
+    source,
+    target,
+    only: strFlag(argv, "--only"),
+    legacyCommands: argv.includes("--legacy-commands"),
+    check: argv.includes("--check"),
+  });
+}
+
+// Only run when invoked directly (not when imported by bin/install.js etc.).
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  process.exit(main(process.argv.slice(2)));
+}

@@ -60,7 +60,7 @@ function promptFile(doc: CanonicalDoc, ctx: GenContext): GeneratedFile {
     ["tools", tools],
   ]);
   return {
-    path: join(ctx.root, ".github", "prompts", `${inv}.prompt.md`),
+    path: join(ctx.targetRoot, ".github", "prompts", `${inv}.prompt.md`),
     content: withBanner(banner, fm + "\n" + translateBody(doc.body)),
   };
 }
@@ -80,7 +80,7 @@ function agentFile(doc: CanonicalDoc, ctx: GenContext): GeneratedFile {
     "handoffs**, the nearest equivalent to a fresh-context subagent. Handoffs may " +
     "not isolate context as cleanly as a Claude subagent — keep inputs explicit._\n";
   return {
-    path: join(ctx.root, ".github", "agents", `${doc.name}.agent.md`),
+    path: join(ctx.targetRoot, ".github", "agents", `${doc.name}.agent.md`),
     content: withBanner(banner, fm + "\n" + translateBody(doc.body) + handoffNote),
   };
 }
@@ -90,7 +90,7 @@ function instructionsFile(
   commands: CanonicalDoc[],
   ctx: GenContext,
 ): GeneratedFile {
-  const path = join(ctx.root, ".github", "copilot-instructions.md");
+  const path = join(ctx.targetRoot, ".github", "copilot-instructions.md");
   const existing = existsSync(path) ? readFileSync(path, "utf8") : "";
   const cmdList = commands
     .map((c) => `- \`/${invocation(c.name)}\` — ${c.frontmatter["description"] ?? ""}`)
