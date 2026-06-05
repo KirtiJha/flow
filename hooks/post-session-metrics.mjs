@@ -31,6 +31,20 @@ function findRoot(start) {
   }
 }
 
+/**
+ * Resolve how to invoke a FLOW helper script. Prefer the compiled
+ * `dist/scripts/<name>.js` (shipped to end users — no tsx needed); fall back to
+ * the `--import tsx scripts/<name>.ts` dev form only in the source repo.
+ */
+function resolveFlowScript(root, name) {
+  const compiled = join(root, "dist", "scripts", name + ".js");
+  if (existsSync(compiled)) return { node: process.execPath, args: [compiled] };
+  return {
+    node: process.execPath,
+    args: ["--import", "tsx", join(root, "scripts", name + ".ts")],
+  };
+}
+
 const input = JSON.parse(readStdin() || "{}");
 const root = findRoot(input.cwd ?? process.cwd());
 if (!root) process.exit(0);
@@ -42,20 +56,10 @@ const note =
     ? "no token count surfaced (reconcile from LiteLLM/Bedrock accounting)"
     : "from session usage";
 
+const { node, args } = resolveFlowScript(root, "flow-metrics");
 const res = spawnSync(
-  "node",
-  [
-    "--import",
-    "tsx",
-    join(root, "scripts", "flow-metrics.ts"),
-    "append",
-    "--phase",
-    phase,
-    "--tokens",
-    tokens,
-    "--note",
-    note,
-  ],
+  node,
+  [...args, "append", "--phase", phase, "--tokens", tokens, "--note", note],
   { cwd: root, encoding: "utf8" },
 );
 if ((res.stdout ?? "").trim()) process.stdout.write(res.stdout.trim() + "\n");

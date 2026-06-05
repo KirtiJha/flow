@@ -34,6 +34,21 @@ function findRoot(start) {
   }
 }
 
+/**
+ * Resolve how to invoke a FLOW helper script. Prefer the compiled
+ * `dist/scripts/<name>.js` (shipped to end users — no tsx needed); fall back to
+ * the `--import tsx scripts/<name>.ts` dev form only in the source repo.
+ * Returns { node, args } where args are the leading args before script params.
+ */
+function resolveFlowScript(root, name) {
+  const compiled = join(root, "dist", "scripts", name + ".js");
+  if (existsSync(compiled)) return { node: process.execPath, args: [compiled] };
+  return {
+    node: process.execPath,
+    args: ["--import", "tsx", join(root, "scripts", name + ".ts")],
+  };
+}
+
 const input = JSON.parse(readStdin() || "{}");
 const ti = input.tool_input ?? {};
 const name = String(ti.skill ?? ti.command ?? ti.name ?? input.prompt ?? "");
@@ -44,11 +59,11 @@ const phase = m[1].toLowerCase();
 const root = findRoot(input.cwd ?? process.cwd());
 if (!root) process.exit(0);
 
-const res = spawnSync(
-  "node",
-  ["--import", "tsx", join(root, "scripts", "flow-budget.ts"), "check", phase],
-  { cwd: root, encoding: "utf8" },
-);
+const { node, args } = resolveFlowScript(root, "flow-budget");
+const res = spawnSync(node, [...args, "check", phase], {
+  cwd: root,
+  encoding: "utf8",
+});
 
 const out = (res.stdout ?? "") + (res.stderr ?? "");
 if (res.status === 2) {
